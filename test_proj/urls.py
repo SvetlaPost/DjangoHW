@@ -16,12 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls.conf import include
 
 from first_app.views import django_greetings, user_greetings
-
+from second_app.views import django_hello, user_hello
 urlpatterns = [
     path('admin/',
          admin.site.urls),
+
     path('greetings/', django_greetings),
-    path("greetings-f-str/", user_greetings)
+    path("greetings-f-str/", user_greetings),
+
+
+    path("second_app/", include("second_app.url")),
+    path("django_hello/", django_hello),
+    path("user_hello/", user_hello),
 ]
