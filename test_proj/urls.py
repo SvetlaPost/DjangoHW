@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/',
          admin.site.urls),
 
+
     path('greetings/', django_greetings),
     path("greetings-f-str/", user_greetings),
 
