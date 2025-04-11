@@ -25,3 +25,15 @@ class SubTaskAdmin(admin.ModelAdmin):
     list_filter = ('status', 'deadline', 'created_at', 'task')
     date_hierarchy = 'deadline'
 
+#ПРИМЕРЫ ЗАВЕДЕНИЯ ПРОЕКТОВ А АДМИН
+
+# 1  admin.site.register(<Model>)
+#class ModelAdmin(admin.ModelAdmin):
+    ...
+
+# admin.site.register(<Model>, ModelAdmin)
+
+
+#@admin.register(<Model>)
+#class ModelAdmin(admin.ModelAdmin):
+ #   ...

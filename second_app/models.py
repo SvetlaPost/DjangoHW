@@ -1,4 +1,15 @@
+from django.contrib.auth.models import User
 from django.db import models
+
+#user = User(
+#    username="NEWUniqueUser",
+#    email="newunique.email@gmail.com",
+#    first_name="Unique2",
+#    last_name="User2",
+#)
+#user.set_password("as-0dG<y0S8^d7fgtS<78")
+#
+#user.save()
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
