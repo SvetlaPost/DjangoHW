@@ -12,7 +12,12 @@ from django.db import models
 #user.save()
 
 class Category(models.Model):
-    name = models.CharField(max_length=100)
+    STATUS_CHOICES = [
+        ('marketing', 'Marketing'),
+        ('development', 'Development'),
+        ('sales', 'Sales'),
+    ]
+    name = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Marketing")
 
     def __str__(self):
         return self.name
@@ -93,5 +98,7 @@ class SubTask(models.Model):
 
     def __str__(self):
         return f"{self.title} (для задачи: {self.task.title})"
+
+
 
 

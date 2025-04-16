@@ -13,33 +13,30 @@ from second_app.models import Task, SubTask, Category
 
 now = timezone.now()
 
-#new_task = Task.objects.create(
-#    title="Prepare presentation",
-#    description= "Prepare materials and slides for the presentation",
-#    deadline = now + timedelta(days=3),
+new_task = Task.objects.create(
+    title="Prepare presentation",
+    description= "Prepare materials and slides for the presentation",
+    deadline = now + timedelta(days=3),
 
-#)
-
-#print(new_task.id)
-
+)
+#
+##print(new_task.id)
+#
 #subtask_1 = SubTask.objects.create(
 #    title="Gather information",
 #    description= "Find necessary information for the presentation",
 #    status= "new",
 #    deadline= now + timedelta(days=2),
-#    task= new_task
+#    task= new_task)
 
-#)
-
-#subtask_2 = SubTask.objects.create(
-#    title="Create slides",
-#    description= "Create presentation slides",
-#    deadline= now + timedelta(days=1),
-#    task= new_task
-#)
-
-#print("Task and SubTask created")
-#print(subtask_2.id)
+subtask_2 = SubTask.objects.create(
+    title="Create slides",
+    description= "Create presentation slides",
+    deadline= now + timedelta(days=1),
+    task= new_task
+)
+print("Task and SubTask created")
+print(subtask_2.id)
 
 #Чтение записей:
 
