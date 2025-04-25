@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'first_app.apps.FirstAppConfig',
     'second_app.apps.SecondAppConfig',
+    'rest_framework',
 
 ]
 
