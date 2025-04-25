@@ -1,6 +1,6 @@
 from second_app.views import django_hello, user_hello, TaskListView, TaskDetailView, TaskStatsView
 from django.urls import path
-from .views import TaskCreateView
+from .views import TaskCreateView, SubTaskListCreateView, SubTaskDetailUpdateDeleteView
 from . import views
 
 urlpatterns = [
@@ -11,6 +11,6 @@ urlpatterns = [
     path('tasks/', TaskListView.as_view(), name='task-list'),
     path('tasks/<int:id>/', TaskDetailView.as_view(), name='task-detail'),
     path('tasks/stats/', TaskStatsView.as_view(), name='task-stats'),
+    path('subtasks/', SubTaskListCreateView.as_view(), name='subtask-list-create'),
+    path('subtasks/<int:pk>/', SubTaskDetailUpdateDeleteView.as_view(), name='subtask-detail-update-delete')
 ]
-
-
