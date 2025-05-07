@@ -46,6 +46,7 @@ class Task(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
     deadline = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
+    day_of_week = models.CharField(max_length=20, default='Monday')
 
     class Meta:
         db_table = 'task_manager_task'

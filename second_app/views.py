@@ -1,7 +1,10 @@
 from urllib import request
+
+from django.db.models.functions.datetime import ExtractDay
 from django.http import HttpResponse
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
+from django.db.models.functions import ExtractYear
 
 from . import models
 from .models import Task, SubTask, Category
@@ -12,7 +15,13 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework.pagination import LimitOffsetPagination
+from django.views.generic import TemplateView
 
+
+
+class HomeView(TemplateView):
+    template_name = 'second_app/home.html'
 
 
 def django_hello(request) -> HttpResponse:
@@ -50,6 +59,38 @@ class TaskStatsView(APIView):
             'tasks_by_status': by_status,
             'overdue_tasks': overdue,
         })
+
+
+class TaskListByDayView(APIView):
+    def get(self, request):
+        day_of_week = request.query_params.get('day_of_week', None)
+
+        if day_of_week:
+            tasks = Task.objects.filter(day_of_week__iexact=day_of_week)
+        else:
+            tasks = Task.objects.all()
+
+        serializer = TaskSerializer(tasks, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class SubTaskListView(generics.ListAPIView):
+    serializer_class = SubTaskSerializer
+#    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        queryset = SubTask.objects.all().order_by('-created_at')
+        main_task_name = self.request.query_params.get('main_task_name')
+        status_ = self.request.query_params.get('status')
+
+        if main_task_name:
+            queryset = queryset.filter(task__title__icontains=main_task_name)
+
+        if status_:
+            queryset = queryset.filter(status=status)
+
+        return queryset
+
 
 class SubTaskListCreateView(APIView):
     def get(self, request):

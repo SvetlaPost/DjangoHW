@@ -49,10 +49,18 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = '__all__'
 
+#class SubTaskSerializer(serializers.ModelSerializer):
+#    class Meta:
+#        model = SubTask
+#        fields = '__all__'
+
 class SubTaskSerializer(serializers.ModelSerializer):
+    main_task_name = serializers.CharField(source='main_task.title', read_only=True)
+
     class Meta:
         model = SubTask
-        fields = '__all__'
+        fields = ['id', 'title', 'status', 'created_at', 'main_task_name']
+
 
 class TaskDetailSerializer(serializers.ModelSerializer):
     subtasks = SubTaskSerializer(many=True, required=False)
@@ -68,5 +76,7 @@ class SubTaskCreateSerializer(serializers.ModelSerializer):
         model = SubTask
         fields = '__all__'
         read_only_fields = ['created_at']
+
+
 
 
