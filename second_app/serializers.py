@@ -42,12 +42,27 @@ class TaskCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Дата дедлайна не может быть в прошлом.")
         return value
 
+class BulkTaskSerializer(serializers.ListSerializer):
+    def create(self, validated_data):
+        tasks = []
+        for item in validated_data:
+            categories = item.pop('categories', [])
+            task = Task.objects.create(**item)
+            task.categories.set(categories)
+            tasks.append(task)
+        return tasks
 
 class TaskSerializer(serializers.ModelSerializer):
-    categories = CategorySerializer(many=True, required=False)
+    #categories = CategorySerializer(many=True, required=False)
+    categories = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Category.objects.all()
+    )
     class Meta:
         model = Task
         fields = '__all__'
+        list_serializer_class = BulkTaskSerializer
+
 
 #class SubTaskSerializer(serializers.ModelSerializer):
 #    class Meta:
@@ -59,7 +74,7 @@ class SubTaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubTask
-        fields = ['id', 'title', 'status', 'created_at', 'main_task_name']
+        fields = ['id', 'title', 'status', 'created_at', 'deadline', 'main_task_name', 'task']
 
 
 class TaskDetailSerializer(serializers.ModelSerializer):

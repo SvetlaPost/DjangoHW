@@ -74,9 +74,9 @@ class SubTask(models.Model):
     description = models.TextField(blank=True)
 
     task = models.ForeignKey(
-        'Task',                 # Ссылается на основную задачу
-        on_delete=models.CASCADE,  # Если Task удалится — удаляются и все SubTask
-        related_name='subtasks'    # Можно будет получить все подзадачи через task.subtasks.all()
+        'Task',
+        on_delete=models.CASCADE,
+        related_name='subtasks'
     )
 
     status = models.CharField(
