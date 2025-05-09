@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
+from second_app.managers import CategoryManager
+
 #user = User(
 #    username="NEWUniqueUser",
 #    email="newunique.email@gmail.com",
@@ -11,11 +13,6 @@ from django.utils import timezone
 #user.set_password("as-0dG<y0S8^d7fgtS<78")
 #
 #user.save()
-
-class CategoryManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(is_deleted=False)
-
 
 class Category(models.Model):
     STATUS_CHOICES = [
