@@ -10,19 +10,18 @@ from django.views.generic import TemplateView
 from . import models
 from .models import Task, SubTask, Category
 from second_app.models import Task
-from .serializers import TaskSerializer, SubTaskSerializer, TaskCreateSerializer
+from .serializers import TaskSerializer, SubTaskSerializer, TaskCreateSerializer, Category
 
-from rest_framework import generics
+from rest_framework import generics,status, filters
 from rest_framework.response import Response
 from rest_framework.request import  Request
 from rest_framework.views import APIView
-from rest_framework import status
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework import filters
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-
 from django_filters.rest_framework import DjangoFilterBackend
-
+from rest_framework.decorators import action
+from .serializers import CategorySerializer
 
 class HomeView(TemplateView):
     template_name = 'second_app/home.html'
@@ -38,6 +37,19 @@ def user_hello(request):
     return HttpResponse(
         f"<h2>Greetings {name}!!! :)</h2>"
     )
+
+#CATEGORIES
+
+class CategoryViewSet(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    @action(detail=True, methods=['get'])
+    def count_tasks(self, request, pk=None):
+        category = self.get_object()
+        count = category.tasks.count()
+        return Response({'task_count': count})
+
 
 #TASKS
 
