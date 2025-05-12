@@ -1,26 +1,29 @@
-from urllib import request
-
-from django.db.models.functions.datetime import ExtractDay
 from django.http import HttpResponse
 from django.utils import timezone
-from django.shortcuts import get_object_or_404
-from django.db.models.functions import ExtractYear
 from django.views.generic import TemplateView
 
-from . import models
-from .models import Task, SubTask, Category
-from second_app.models import Task
-from .serializers import TaskSerializer, SubTaskSerializer, TaskCreateSerializer, Category
+from second_app import models
+from second_app.models import Task, SubTask, Category
+from second_app.serializers import (TaskSerializer,
+                          SubTaskSerializer,
+                          TaskCreateSerializer,
+                          Category)
 
 from rest_framework import generics,status, filters
 from rest_framework.response import Response
 from rest_framework.request import  Request
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.pagination import (LimitOffsetPagination,
+                                       CursorPagination,
+                                       )
+
+from rest_framework.generics import (ListCreateAPIView,
+                                     RetrieveUpdateDestroyAPIView)
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
+
+from .permissions import IsAdminOrReadOnly
 from .serializers import CategorySerializer
 
 class HomeView(TemplateView):
@@ -43,6 +46,7 @@ def user_hello(request):
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [IsAdminOrReadOnly]
 
     @action(detail=True, methods=['get'])
     def count_tasks(self, request, pk=None):
@@ -64,12 +68,13 @@ class BulkCreateTaskView(APIView):
 class TaskListCreateView(ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
-
+    permission_classes = [IsAdminOrReadOnly]
+    pagination_class = CursorPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['status', 'deadline']
     search_fields = ['title', 'description']
     ordering_fields = ['created_at']
-    ordering = ['created_at']
+    ordering = ['-created_at']
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -83,6 +88,7 @@ class TaskListCreateView(ListCreateAPIView):
 class TaskRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+    permission_classes = [IsAdminOrReadOnly]
     lookup_field = 'id'
 
 
@@ -128,7 +134,7 @@ class SubtaskListCreateView(ListCreateAPIView):
     filterset_fields = ['status', 'deadline']
     search_fields = ['title', 'description']
     ordering_fields = ['created_at']
-    ordering = ['created_at']
+    ordering = ['-created_at']
 
     def post(self, request, *args, **kwargs):
         data = request.data
