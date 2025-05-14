@@ -1,6 +1,8 @@
 from django.urls import path
 from django.urls.conf import include
 from rest_framework.routers import DefaultRouter
+from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .views import (
     CategoryViewSet,
@@ -29,6 +31,10 @@ urlpatterns = [
     path('subtasks/', SubtaskListCreateView.as_view(), name='subtask-list-create'),
     path('subtasks/<int:pk>/', SubtaskUpdateDestroyAPIView.as_view(), name='subtask-update-delete'),
     path('', HomeView.as_view(), name='home'),
-]
+    path('auth-login/', obtain_auth_token),
+    path('auth-login-jwt/', TokenObtainPairView.as_view()),
+    path('token-refresh/', TokenRefreshView.as_view()),
+] + router.urls
+
 
 
