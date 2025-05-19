@@ -2,6 +2,7 @@ from rest_framework import serializers
 from second_app.models import Task, Category, SubTask
 from datetime import date
 
+#СATEGORY
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,16 +32,7 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-class TaskCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Task
-        fields = ['id', 'title', 'description', 'status', 'deadline', 'categories', 'created_at']
-        read_only_fields = ['created_at']
-
-    def validate_deadline(self, value):
-        if value < date.today():
-            raise serializers.ValidationError("Дата дедлайна не может быть в прошлом.")
-        return value
+#TASK
 
 class BulkTaskSerializer(serializers.ListSerializer):
     def create(self, validated_data):
@@ -62,12 +54,22 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = '__all__'
         list_serializer_class = BulkTaskSerializer
+        read_only_fields = ['owner']
 
 
-#class SubTaskSerializer(serializers.ModelSerializer):
-#    class Meta:
-#        model = SubTask
-#        fields = '__all__'
+class TaskCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ['id', 'title', 'description', 'status', 'deadline', 'categories', 'created_at']
+        read_only_fields = ['created_at']
+
+    def validate_deadline(self, value):
+        if value < date.today():
+            raise serializers.ValidationError("Дата дедлайна не может быть в прошлом.")
+        return value
+
+
+
 
 class SubTaskSerializer(serializers.ModelSerializer):
     main_task_name = serializers.CharField(source='main_task.title', read_only=True)
@@ -75,7 +77,7 @@ class SubTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubTask
         fields = ['id', 'title', 'status', 'created_at', 'deadline', 'main_task_name', 'task']
-
+        read_only_fields = ['owner']
 
 class TaskDetailSerializer(serializers.ModelSerializer):
     subtasks = SubTaskSerializer(many=True, required=False)

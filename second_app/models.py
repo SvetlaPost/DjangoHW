@@ -27,8 +27,8 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-    objects = CategoryManager()  # фильтр удалённых
-    all_objects = models.Manager()  # все записи, включая удалённые
+    objects = CategoryManager()
+    all_objects = models.Manager()
 
     def delete(self, using=None, keep_parents=False):
         self.is_deleted = True
@@ -59,6 +59,7 @@ class Task(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     categories = models.ManyToManyField(Category, related_name='tasks')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tasks")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
     deadline = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
