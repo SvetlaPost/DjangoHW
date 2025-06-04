@@ -2,14 +2,6 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.views.generic import TemplateView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-
-from second_app import models
-from second_app.models import Task, SubTask, Category
-from second_app.serializers import (TaskSerializer,
-                          SubTaskSerializer,
-                          TaskCreateSerializer,
-                          Category)
-
 from rest_framework import generics, status, filters, viewsets
 from rest_framework.response import Response
 from rest_framework.request import  Request
@@ -18,15 +10,52 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import (LimitOffsetPagination,
                                        CursorPagination,
                                        )
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import status
+
+from second_app import models
+from second_app.models import Task, SubTask, Category
+from second_app.serializers import (TaskSerializer,
+                          SubTaskSerializer,
+                          TaskCreateSerializer,
+                          Category)
+
+
 
 
 from rest_framework.generics import (ListCreateAPIView,
-                                     RetrieveUpdateDestroyAPIView, ListAPIView)
+                                     RetrieveUpdateDestroyAPIView,
+                                     ListAPIView)
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 
-from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly, IsAdminWithMessage, IsOwner
-from .serializers import CategorySerializer
+from.permissions import (
+    IsAdminOrReadOnly,
+    IsOwnerOrReadOnly,
+    IsAdminWithMessage,
+    IsOwner,
+)
+from rest_framework.permissions import AllowAny
+from .serializers import CategorySerializer, RegisterSerializer
+
+
+
+class RegisterView(generics.CreateAPIView):
+    serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class HomeView(TemplateView):
     template_name = 'second_app/home.html'

@@ -8,7 +8,6 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-
 from .views import (
     CategoryViewSet,
     TaskListCreateView,
@@ -20,6 +19,7 @@ from .views import (
     HomeView,
     django_hello,
     user_hello, UserTaskListView,
+    RegisterView, LogoutView,
 )
 
 schema_view = get_schema_view(
@@ -52,9 +52,11 @@ urlpatterns = [
     path('subtasks/<int:pk>/', SubtaskUpdateDestroyAPIView.as_view(), name='subtask-update-delete'),
     path('', HomeView.as_view(), name='home'),
     #path('user-tasks/', UserTaskListView.as_view()),
+    path("register/", RegisterView.as_view(), name="register"),
     path('auth-login/', obtain_auth_token),
     path('access-login-jwt/', TokenObtainPairView.as_view()),
     path('token-refresh/', TokenRefreshView.as_view()),
+    path("logout/", LogoutView.as_view(), name="logout"),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     #path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

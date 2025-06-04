@@ -1,6 +1,25 @@
 from rest_framework import serializers
-from second_app.models import Task, Category, SubTask
+from second_app.models import Task, Category, SubTask, User
 from datetime import date
+import re
+
+#USER REGISTRATION
+
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, min_length=8)
+
+    class Meta:
+        model = User
+        fields = ("email", "username", "password")
+
+    def validate_password(self, value):
+        if not re.search(r"\d", value) or not re.search(r"[A-Z]", value):
+            raise serializers.ValidationError("Пароль должен содержать хотя бы одну цифру и заглавную букву.")
+        return value
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+
 
 #СATEGORY
 
